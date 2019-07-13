@@ -1,26 +1,28 @@
+import scipy
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile as wav
 from playsound import playsound
-import os
-import time
+from scipy import signal
 
-print("Reading Signals. Please wait...")
+print("Reading Signal. Please wait...")
 path = "input/input.txt"
 data = np.loadtxt(path)
 print("Reading Finished")
-amplify_factor = 2
+amplification_factor = 4
 cnt = 0
 while True:
     w0 = int(input("Please select a frequency (96k,144k,288k,240k) : \n"))
     print("Processing...")
     N = 480000  #sampling rate
-    cosine_values = 0.5 * (np.exp(np.array([1j*i*w0*2*np.pi/N for i in range(len(data))])) + np.exp(np.array([-1j*i*w0*2*np.pi/N for i in range(len(data))])))
+    cosine_values = 0.5 * (np.exp(np.array([1j*i*w0*2*np.pi/N for i in range(len(data))])) +
+                           np.exp(np.array([-1j*i*w0*2*np.pi/N for i in range(len(data))])))
     f = np.multiply(data,cosine_values)
     f = np.fft.fft(f)
-    f *= amplify_factor
+    f *= amplification_factor
 
-    for i in range(30000,len(f)-30000):
+    for i in range(20000,len(f)-20000):
         f[i] = 0
 
     f = np.fft.ifft(f)
